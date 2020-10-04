@@ -16,5 +16,8 @@ export default  {
     },
     updateSingleTodo(todo){
         return services().put('/post/' + todo.id, todo);
+    },
+    createUser(user) {
+        return services().post('/signup', user);
     }
 }

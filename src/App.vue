@@ -2,7 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/post">Home</router-link> |
-      <router-link to="/createTask">Add new</router-link>
+      <router-link to="/createTask">Add new</router-link> |
+      <router-link to="/signup">Signup</router-link>
     </div>
     <router-view/>
   </div>

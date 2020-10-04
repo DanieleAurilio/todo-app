@@ -29,12 +29,12 @@ export default {
         async getToDo() {
             const response = await Switch.fetchToDo();
             this.todos = response.data;
-            console.log(this.todos)
         },
         
         deleteToDo(removedToDo) {
             Switch.deleteTodo(removedToDo);
         },
+        
         updateToDo(getId) {
             this.$router.push('/post/' + getId);
         }

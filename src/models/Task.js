@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 let TaskSchema = new mongoose.Schema({
     title: {
          type: String,
@@ -10,6 +9,11 @@ let TaskSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    author:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    }
 },
  {
      collection: 'task'

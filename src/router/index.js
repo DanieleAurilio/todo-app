@@ -2,7 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Homepage from '../views/Homepage.vue'
 import createTaskView from '../views/createTaskView.vue';
-import updateTask from '../components/updateTask.vue'
+import updateTask from '../components/updateTask.vue';
+import signupUser from '../components/signup.vue';
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -21,6 +23,11 @@ const routes = [
     name: 'updateTask',
     component: updateTask
   },
+  { 
+    path: '/signup',
+    name: 'signupUser',
+    component: signupUser
+  }
 ]
 
 const router = new VueRouter({
