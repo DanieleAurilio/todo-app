@@ -5,15 +5,18 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const uri = 'mongodb://localhost:27017/tododb';
+const TOKEN_SECRET = 'djghhhhuuwiwuewieuwieuriwu';
+const verifyToken = require('../controllers/verifyToken');
+
 
 const task = require('../models/Task');
 const user = require('../models/User');
 
+
     mongoose.connect(uri,   {  useUnifiedTopology: true,  useNewUrlParser: true  })
-    .then(response => console.log('sono collegato al server'))
-    .catch(error => console.log('oh no qualcosa è andato storto durante la connessione als server'));
+    .then(response => console.log('connect to db'))
+    .catch(error => console.log('error when trying connect to db'));
 
 const db = mongoose.connection;    
 
@@ -21,35 +24,33 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-/// get all post
-app.get('/post', (req,res,next) => {
-    task.find({}, function(error, tasks){
+/// get all post by user id connect token
+app.get('/post',  verifyToken, (req,res,next) => {
+    task.find({'author': req.user._id}, function(error, tasks){
         res.send(tasks)
     });
-
 });
 
 ////get single post
 app.get('/post/:id', (req,res,next) => {
-    task.findById(req.params.id, (error,task)=> {
+    task.findById(req.params.id, (error,task) => {
         
         if(error)  throw console.log(error);
        
         res.send(task);
             
-
     });
 });
 
 ////create new task
-app.post('/createTask', (req,res) => {
+app.post('/createTask', verifyToken, (req,res) => {
     var title = req.body.title;
     var description = req.body.description;
 
     const newTask = new task({
         'title': title,
         'description': description, 
-        'author': req.body.author  //// id del mio utente per creare relazione
+        'author': req.user._id  //// id del mio utente per creare relazione
     });
 
     newTask.save(function (err) {
@@ -112,7 +113,7 @@ app.post('/signup', async function(req,res,next) {
     let password = req.body.password;
     let userEmailExist = await user.findOne({ email: req.body.email });
 
-    if(userEmailExist)  return res.status(400).send({ message: "Sei già registrato con questa email" }); ///check if user email already exist
+    if(userEmailExist)  return res.status(400).send({ message: "Email already exist" }); ///check if user email already exist
     
 
     bcrypt.hash(password,saltRounds)
@@ -128,7 +129,7 @@ app.post('/signup', async function(req,res,next) {
     newUser.save(function(error) {
         if(error) throw console.log(error);
         res.send({
-            message: 'utente inserito a db',
+            message: 'ok, user is now in db',
             success: true
         })
     });
@@ -137,6 +138,39 @@ app.post('/signup', async function(req,res,next) {
  
 });
 
+
+/////login user
+
+app.post('/login',  async function(req,res,next) {
+   
+    let userExist = await user.findOne({ email: req.body.email });
+    
+
+    if(!userExist) return res.status(400).send({
+        message: 'Email not found'
+    });
+    
+    let validPassword = await bcrypt.compare(req.body.password, userExist.password);
+    
+    if(!validPassword) return res.status(400).send({
+        message: 'Password is incorrect'
+    })
+    
+    var newToken = jwt.sign({_id: userExist._id}, TOKEN_SECRET, {expiresIn: '7d'});
+    
+    res.status(200).header('token', newToken).send(newToken);
+
+});
+
+
+
+app.get('*', verifyToken, async function(req,res,next){
+
+    let userLogged = await user.find({'_id': req.user._id});
+    if(userLogged) {
+        res.status(200).send(userLogged);
+    }
+});
 
 app.listen(8081, () => {
     console.log('node server is up')

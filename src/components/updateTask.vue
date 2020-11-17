@@ -1,9 +1,17 @@
 <template>
     <div class="container-updater">
         <h1> UPDATE YOUR TASK </h1>
-        <input type="text" name="title" placeholder="title" v-model="title">
-        <input type="text" name="description" placeholder="description" v-model="description">
-        <button v-on:click="updateTask()">Edit Task</button>
+        <md-field> 
+            <label>Task's Title</label>
+            <md-input type="text" name="title"  v-model="title">{{title}}</md-input>
+        </md-field>
+        <md-field>    
+            <label>Task's Description</label>
+            <md-textarea type="text" name="description" v-model="description">{{description}}</md-textarea>
+        </md-field>
+        
+
+        <md-button class="md-dense md-raised md-primary" v-on:click="updateTask()">Edit Task</md-button>
     </div>
 </template>ù
 
@@ -49,5 +57,24 @@ export default {
 </script>
 
 <style>
+    .container-updater {
+        display: flex;
+        flex-direction: column;
+        width: 25%;
+        margin: 0 auto
+    }
 
+    @media screen and (max-width: 768px){
+        .container-all {
+            padding-top: 15%;
+        }
+        .container-updater {
+            width: 80%;
+            padding-top: 15%;
+        }
+
+        h1 {
+            line-height: 1;
+        }
+    }
 </style>

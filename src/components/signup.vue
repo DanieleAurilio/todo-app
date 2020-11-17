@@ -1,10 +1,23 @@
 <template>
     <div class="container-signup">
-        <input type="text" placeholder="insert firstame" v-model="firstname">
-        <input type="text" placeholder="insert lastame" v-model="lastname">
-        <input type="text" placeholder="insert email" v-model="email">
-        <input type="text" placeholder="insert password" v-model="password">
-        <button v-on:click="signup()"> Signup </button>
+        <md-field>
+            <md-input type="text" v-model="firstname"></md-input>
+            <label>Insert Firstname</label>
+        </md-field>
+        <md-field>
+        <md-input type="text" v-model="lastname"></md-input>
+            <label>Insert Lastname</label>
+        </md-field>
+        <md-field>
+            <md-input type="text" v-model="email"></md-input>
+            <label>Inser Email</label>
+        </md-field>
+        <md-field>  
+            <md-input type="text" v-model="password"></md-input>
+            <label>Insert Password</label>
+        </md-field>
+        
+        <md-button class="md-dense md-raised md-primary" v-on:click="signup()"> Signup </md-button>
     </div>
 </template>
 
@@ -22,7 +35,9 @@ export default {
             password: ''
         }
     },
-
+    beforeMount() {
+        this.isUserLogged();
+    },
     methods: {
         signup() {
             let user = {
@@ -33,6 +48,12 @@ export default {
             }  
             
             Switch.createUser(user);
+        },
+        isUserLogged() {
+            let getToken = localStorage.getItem('token');
+            if(getToken) {
+                this.$router.push('/post')
+            }
         }
     }    
 }
@@ -44,5 +65,12 @@ export default {
         flex-direction: column;
         margin: 0 auto;
         width: 25%;
+    }
+
+    @media screen and (max-width: 768px) {
+        .container-signup {
+            width: 80%;
+            padding-top: 15%;
+        }
     }
 </style>

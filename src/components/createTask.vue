@@ -1,8 +1,16 @@
 <template>
     <div class="container-createTask">
-        <input type="text" placeholder="Insert Title" v-model="title">
-        <input type="text" placeholder="Insert Description" v-model="description">
-        <button v-on:click="setterToDo()" > Add </button>
+        <h1>CREATE NEW TASK</h1>
+        <md-field> 
+            <md-input type="text" v-model="title"></md-input>
+            <label>Insert Title</label>
+        </md-field>
+        <md-field> 
+            <md-textarea type="textarea" v-model="description"></md-textarea>
+            <label>Insert description</label>
+        </md-field>
+
+        <md-button class="md-dense md-raised md-primary" v-on:click="setterToDo()"> Add </md-button>
     </div>
 </template>
 
@@ -20,17 +28,38 @@ export default {
            
         }
     },
-
+    mounted() {
+        this.getToken();
+    },
     methods: {
-        setterToDo: function() {
+        
+        getToken() {
+            let getToken = localStorage.getItem('token');
+            if(!getToken){
+                this.$router.push('/login');
+            }
+            let tokenobj = {
+                headers: {
+                    "token": getToken
+                }
+            }
+
+            return tokenobj;
            
-        let   getToDo = {
+        },
+
+        setterToDo: async function() {
+            var header = this.getToken();
+            
+            let getToDo = {
                 'title': this.title,
                 'description': this.description
             }
 
-            Switch.setToDo(getToDo)
-        },
+            Switch.setToDo(getToDo,header);
+
+            this.$router.push('/post')
+        }
     }    
 }
 </script>
@@ -46,5 +75,12 @@ export default {
     input {
         margin-bottom: 20px;
         text-align: center;
+    }
+
+    @media screen and (max-width: 768px){
+        .container-createTask {
+            width: 80%;
+            padding-top: 15%;
+        }
     }
 </style>
