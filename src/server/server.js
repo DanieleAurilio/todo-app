@@ -5,8 +5,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const uri = 'mongodb://localhost:27017/tododb';
-const TOKEN_SECRET = 'djghhhhuuwiwuewieuwieuriwu';
+const dotenv = require('dotenv');
+dotenv.config();
+const uri = process.env.MONGO;
+const TOKEN_SECRET = process.env.SECRET_TOKEN;
 const verifyToken = require('../controllers/verifyToken');
 
 
